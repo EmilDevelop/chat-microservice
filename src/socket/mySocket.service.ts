@@ -29,10 +29,15 @@ export class MySocketService
     this.leaveAllRooms(client);
   }
 
+  @SubscribeMessage("verbose")
+  async verbose(client: Socket, data: any) {
+    console.log(`Client ${client.id} => ${data}`);
+  }
+
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, room: string): void {
     client.join(room);
-    this.logger.debug(`🚪 ${client.id} joined room: ${room}`);
+    this.logger.debug(`🚪 ${client.id} joined room: ${JSON.stringify(room)}`);
     this.rooms[room] = this.rooms[room] || [];
     this.rooms[room].push(client);
   }
@@ -50,8 +55,11 @@ export class MySocketService
     payload: { room: string; message: string }
   ): void {
     const { room, message } = payload;
+    console.log(payload);
+    console.log(this.rooms[room]);
     if (this.rooms[room]) {
       this.rooms[room].forEach((participant) => {
+        console.log(participant);
         if (participant !== client) {
           participant.emit("chat", `Room ${room} - ${client.id}: ${message}`);
         }
