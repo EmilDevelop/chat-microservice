@@ -6,7 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 
 @WebSocketGateway()
 export class MySocketService
@@ -15,19 +15,72 @@ export class MySocketService
   @WebSocketServer()
   server: Server;
 
-  logger: Logger = new Logger(MySocketService.name);
+  private logger: Logger = new Logger(MySocketService.name);
 
-  handleConnection(client: any, ...args: any[]): any {
-    this.logger.debug(`🙋🏻‍♂️ ${client.id} connect to socket...`);
+  private rooms: Record<string, Socket[]> = {};
+
+  handleConnection(client: Socket, ...args: any[]): any {
+    this.logger.debug(`🙋🏻‍♂️ ${client.id} connected to socket...`);
   }
 
-  handleDisconnect(client: any): any {
-    this.logger.debug(`🙋🏻‍♂️ ${client.id} disconnect from socket...`);
+  handleDisconnect(client: Socket): any {
+    this.logger.debug(`🙋🏻‍♂️ ${client.id} disconnected from socket...`);
+    // Leave all rooms when a user disconnects
+    this.leaveAllRooms(client);
   }
 
-  @SubscribeMessage("chat")
-  handleMessage(client: any, payload: any): void {
-    console.log(payload);
-    client.broadcast.emit("chat", payload); // используйте broadcast, чтобы исключить отправителя
+  @SubscribeMessage("joinRoom")
+  handleJoinRoom(client: Socket, room: string): void {
+    client.join(room);
+    this.logger.debug(`🚪 ${client.id} joined room: ${room}`);
+    this.rooms[room] = this.rooms[room] || [];
+    this.rooms[room].push(client);
+  }
+
+  @SubscribeMessage("leaveRoom")
+  handleLeaveRoom(client: Socket, room: string): void {
+    client.leave(room);
+    this.logger.debug(`🚪 ${client.id} left room: ${room}`);
+    this.rooms[room] = this.rooms[room].filter((c) => c !== client);
+  }
+
+  @SubscribeMessage("messageToRoom")
+  handleMessageToRoom(
+    client: Socket,
+    payload: { room: string; message: string }
+  ): void {
+    const { room, message } = payload;
+    if (this.rooms[room]) {
+      this.rooms[room].forEach((participant) => {
+        if (participant !== client) {
+          participant.emit("chat", `Room ${room} - ${client.id}: ${message}`);
+        }
+      });
+    }
+  }
+
+  @SubscribeMessage("privateMessage")
+  handlePrivateMessage(
+    client: Socket,
+    payload: { to: string; message: string }
+  ): void {
+    const { to, message } = payload;
+    const targetClient = this.server.sockets.sockets.get(to);
+    if (targetClient) {
+      targetClient.emit(
+        "chat",
+        `Private message from ${client.id}: ${message}`
+      );
+    } else {
+      client.emit("chat", `User ${to} not found or offline.`);
+    }
+  }
+
+  private leaveAllRooms(client: Socket): void {
+    Object.keys(this.rooms).forEach((room) => {
+      if (this.rooms[room].includes(client)) {
+        this.handleLeaveRoom(client, room);
+      }
+    });
   }
 }
