@@ -1,32 +1,30 @@
-import json
-import os
-import time
 import socketio
 
-
-# Создаем экземпляр клиента
 sio = socketio.Client()
 
 
 @sio.event
 def connect():
-    print("Connected to server")
+    print("connection established")
 
 
-@sio.on("connect")
-def connect(data):
-    print(data)
+@sio.event
+def my_message(data):
+    print("message received with ", data)
+    sio.emit("my response", {"response": "my response"})
 
 
-sio.connect("http://5.53.124.87:3007")
+@sio.event
+def disconnect():
+    print("disconnected from server")
 
 
 @sio.on("chat")
 def chat(data):
-    print("Message ", data)
+    print(data)
 
 
-sio.emit("chat", {})
+sio.connect("http://5.53.124.87:3007")
+sio.emit("chat", "HELLO!")
 
-
-#
+sio.wait()
