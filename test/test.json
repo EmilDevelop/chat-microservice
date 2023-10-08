@@ -1,6 +1,13 @@
 {
-  "from_user_socket_id": "Идентификатор клиента в сокете",
-  "to_room": "Идентификатор комнаты",
-  "msg": "Сообщение отправленное пользователем",
-  "date": "Дата отправки сообщения"
+  "from_user_socket_id": "string",
+  "to_user_socket_id": "string",
+  "to_room": "string",
+  "author": {
+    "id": " String",
+    "firstName": "String",
+    "lastName": "String"
+  },
+  "text": "string",
+  "id": "string",
+  "createdAt": "timestamp"
 }

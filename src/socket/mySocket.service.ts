@@ -8,7 +8,7 @@ import {
 } from "@nestjs/websockets";
 import { randomUUID } from "crypto";
 import { Server, Socket } from "socket.io";
-import { MsgInrerface } from "src/domain/interface/msg/privateMsg.interaface";
+import { RoomMsgInrerface } from "src/domain/interface/msg/privateMsg.interaface";
 
 @WebSocketGateway()
 export class MySocketService
@@ -45,8 +45,8 @@ export class MySocketService
   }
 
   @SubscribeMessage("chat")
-  handleChat(client: Socket, msg: MsgInrerface) {
-    const targetClient = this.server.sockets.sockets.get(msg.to_user_socket_id);
+  handleChat(client: Socket, msg: RoomMsgInrerface) {
+    // const targetClient = this.server.sockets.sockets.get(msg);
     targetClient.emit("chat", msg);
   }
 
@@ -66,14 +66,17 @@ export class MySocketService
     if (this.rooms[room]) {
       this.rooms[room].forEach((participant) => {
         if (participant !== client) {
-          const newMsg: MsgInrerface = {
+          const newMsg: RoomMsgInrerface = {
+            id: randomUUID(),
             from_user_socket_id: client.id,
-            to_user_socket_id: participant.id,
             to_room: room,
-            author: "Authon nickname",
-            msg: message,
-            uuid: randomUUID(),
-            date: new Date(),
+            author: {
+              id: "SOME_USER_ID",
+              firstName: "SOME_USER_FIRST_NAME",
+              lastName: "SOME_USER_SECOND_NAME",
+            },
+            text: message,
+            createdAt: Date.now(),
           };
           participant.emit("chat", newMsg);
         }
@@ -91,16 +94,7 @@ export class MySocketService
     const { to, message } = payload;
     const targetClient = this.server.sockets.sockets.get(to);
     if (targetClient) {
-      const newMsg: MsgInrerface = {
-        from_user_socket_id: client.id,
-        to_user_socket_id: to,
-        to_room: null,
-        author: "",
-        msg: "",
-        uuid: "",
-        date: undefined,
-      };
-      targetClient.emit("chat", newMsg);
+      // targetClient.emit("chat", newMsg);
     } else {
       client.emit("privateMessage", `User ${to} not found or offline.`);
     }
