@@ -93,16 +93,14 @@ export class MySocketService
     if (targetClient) {
       const newMsg: MsgInrerface = {
         from_user_socket_id: client.id,
+        to_user_socket_id: to,
         to_room: null,
         author: "",
         msg: "",
         uuid: "",
         date: undefined,
       };
-      targetClient.emit(
-        "privateMessage",
-        `Private message from ${client.id}: ${message}`
-      );
+      targetClient.emit("chat", newMsg);
     } else {
       client.emit("privateMessage", `User ${to} not found or offline.`);
     }
