@@ -74,6 +74,7 @@ export class MySocketService
 
       const room_names = this.rooms.length;
       this.logger.warn(`Socket have ${room_names} rooms!`);
+      this.logger.warn(this.rooms);
       //!_-------
       this.rooms[to_room].forEach((participant) => {
         console.log(participant.id, client.id);
