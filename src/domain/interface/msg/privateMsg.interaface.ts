@@ -12,7 +12,7 @@ export interface RoomMsgInrerface {
   createdAt: number;
 }
 
-export interface PrivateRoomMsgInrerface {
+export interface PrivateMsgInrerface {
   from_user_socket_id: string;
   to_user_socket_id: string;
   to_room?: string;

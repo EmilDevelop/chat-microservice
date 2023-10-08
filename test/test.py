@@ -59,6 +59,6 @@ msg = {
     "createdAt": int(time.time()),
 }
 
-sio.emit("privateMessage", msg)
+sio.emit("messageToRoom", msg)
 
 sio.wait()

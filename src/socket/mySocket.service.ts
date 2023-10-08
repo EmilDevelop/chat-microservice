@@ -8,7 +8,10 @@ import {
 } from "@nestjs/websockets";
 import { randomUUID } from "crypto";
 import { Server, Socket } from "socket.io";
-import { RoomMsgInrerface } from "src/domain/interface/msg/privateMsg.interaface";
+import {
+  PrivateMsgInrerface,
+  RoomMsgInrerface,
+} from "src/domain/interface/msg/privateMsg.interaface";
 
 @WebSocketGateway()
 export class MySocketService
@@ -45,8 +48,8 @@ export class MySocketService
   }
 
   @SubscribeMessage("chat")
-  handleChat(client: Socket, msg: RoomMsgInrerface) {
-    // const targetClient = this.server.sockets.sockets.get(msg);
+  handleChat(client: Socket, msg: PrivateMsgInrerface) {
+    const targetClient = this.server.sockets.sockets.get(msg.to_user_socket_id);
     targetClient.emit("chat", msg);
   }
 
@@ -66,9 +69,10 @@ export class MySocketService
     if (this.rooms[room]) {
       this.rooms[room].forEach((participant) => {
         if (participant !== client) {
-          const newMsg: RoomMsgInrerface = {
+          const newMsg: PrivateMsgInrerface = {
             id: randomUUID(),
             from_user_socket_id: client.id,
+            to_user_socket_id: participant.id,
             to_room: room,
             author: {
               id: "SOME_USER_ID",
