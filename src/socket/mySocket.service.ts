@@ -65,6 +65,7 @@ export class MySocketService
     client: Socket,
     payload: { to_room: string; text: string }
   ): void {
+    console.log("YA TUUUUTT");
     const { to_room, text } = payload;
     if (this.rooms[to_room]) {
       this.rooms[to_room].forEach((participant) => {
