@@ -29,6 +29,11 @@ def join_room(data):
     print(data)
 
 
+@sio.on("chat")
+def chat(msg):
+    print(msg)
+
+
 @sio.on("messageToRoom")
 def message_to_room(data):
     print(data)
@@ -38,10 +43,10 @@ server_address = "http://5.53.124.87:3007"
 local_address = "http://127.0.0.1:3007"
 DEBUG = True
 connection_address = local_address if DEBUG else server_address
-print(connection_address)
 sio.connect(connection_address)
-sio.emit("verbose", "HELLO!")
-sio.emit("joinRoom", {"room": "omega"})
+# sio.emit("verbose", "HELLO!")
+sio.emit("joinRoom", "omega")
 sio.emit("messageToRoom", {"room": "omega", "message": "А не ахуел-ли ты часом?"})
+sio.emit("privateMessage", {"to": "123", "message": "Poshel nahuy"})
 
 sio.wait()

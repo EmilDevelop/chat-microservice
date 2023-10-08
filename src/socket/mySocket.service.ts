@@ -55,15 +55,14 @@ export class MySocketService
     payload: { room: string; message: string }
   ): void {
     const { room, message } = payload;
-    console.log(payload);
-    console.log(this.rooms[room]);
     if (this.rooms[room]) {
       this.rooms[room].forEach((participant) => {
-        console.log(participant);
         if (participant !== client) {
           participant.emit("chat", `Room ${room} - ${client.id}: ${message}`);
         }
       });
+    } else {
+      console.log("Room was undefined!");
     }
   }
 
