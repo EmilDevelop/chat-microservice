@@ -12,6 +12,7 @@ import {
   PrivateMsgInrerface,
   RoomMsgInrerface,
 } from "src/domain/interface/msg/privateMsg.interaface";
+import { json } from "stream/consumers";
 
 @WebSocketGateway()
 export class MySocketService
@@ -47,12 +48,6 @@ export class MySocketService
     this.rooms[room].push(client);
   }
 
-  @SubscribeMessage("chat")
-  handleChat(client: Socket, msg: PrivateMsgInrerface) {
-    const targetClient = this.server.sockets.sockets.get(msg.to_user_socket_id);
-    targetClient.emit("chat", msg);
-  }
-
   @SubscribeMessage("leaveRoom")
   handleLeaveRoom(client: Socket, room: string): void {
     client.leave(room);
@@ -84,13 +79,18 @@ export class MySocketService
             text: text,
             createdAt: Date.now(),
           };
-          console.log(`sended to chat => ${participant.id} \n${newMsg}`);
           participant.emit("chat", newMsg);
         }
       });
     } else {
       console.log("Room was undefined!");
     }
+  }
+  @SubscribeMessage("chat")
+  handleChat(client: Socket, msg: PrivateMsgInrerface) {
+    const targetClient = this.server.sockets.sockets.get(msg.to_user_socket_id);
+    targetClient.emit("chat", msg);
+    this.logger.debug(JSON.stringify(msg));
   }
 
   @SubscribeMessage("privateMessage")
