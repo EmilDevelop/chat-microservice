@@ -6,7 +6,9 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
+import { randomUUID } from "crypto";
 import { Server, Socket } from "socket.io";
+import { MsgInrerface } from "src/domain/interface/msg/privateMsg.interaface";
 
 @WebSocketGateway()
 export class MySocketService
@@ -42,6 +44,12 @@ export class MySocketService
     this.rooms[room].push(client);
   }
 
+  @SubscribeMessage("chat")
+  handleChat(client: Socket, msg: MsgInrerface) {
+    const targetClient = this.server.sockets.sockets.get(msg.to_user_socket_id);
+    targetClient.emit("chat", msg);
+  }
+
   @SubscribeMessage("leaveRoom")
   handleLeaveRoom(client: Socket, room: string): void {
     client.leave(room);
@@ -58,7 +66,16 @@ export class MySocketService
     if (this.rooms[room]) {
       this.rooms[room].forEach((participant) => {
         if (participant !== client) {
-          participant.emit("chat", `Room ${room} - ${client.id}: ${message}`);
+          const newMsg: MsgInrerface = {
+            from_user_socket_id: client.id,
+            to_user_socket_id: participant.id,
+            to_room: room,
+            author: "Authon nickname",
+            msg: message,
+            uuid: randomUUID(),
+            date: new Date(),
+          };
+          participant.emit("chat", newMsg);
         }
       });
     } else {
@@ -74,6 +91,14 @@ export class MySocketService
     const { to, message } = payload;
     const targetClient = this.server.sockets.sockets.get(to);
     if (targetClient) {
+      const newMsg: MsgInrerface = {
+        from_user_socket_id: client.id,
+        to_room: null,
+        author: "",
+        msg: "",
+        uuid: "",
+        date: undefined,
+      };
       targetClient.emit(
         "privateMessage",
         `Private message from ${client.id}: ${message}`

@@ -47,7 +47,7 @@ sio.connect(connection_address)
 # sio.emit("verbose", "HELLO!")
 sio.emit("joinRoom", "79961049967")
 # sio.emit("messageToRoom", {"room": "79961049967", "message": "А не ахуел-ли ты часом?"})
-user_id = "p3nURkoY3lCDw2Z4AAAB"
+user_id = "31OotsiztwYRACZKAAAD"
 sio.emit("privateMessage", {"to": user_id, "message": "Poshel nahuy"})
 
 sio.wait()
