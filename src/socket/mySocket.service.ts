@@ -42,7 +42,7 @@ export class MySocketService
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, room: string): void {
     client.join(room);
-    this.logger.debug(`🚪 ${client.id} joined room: ${JSON.stringify(room)}`);
+    this.logger.debug(`🚪 ${client.id} joined room: ${room}`);
     this.rooms[room] = this.rooms[room] || [];
     this.rooms[room].push(client);
   }
@@ -71,10 +71,6 @@ export class MySocketService
       //! DELETE ME
       const client_in_room = this.rooms[to_room].length;
       this.logger.warn(`Room ${to_room} have ${client_in_room} clients...`);
-
-      const room_names = this.rooms.length;
-      this.logger.warn(`Socket have ${room_names} rooms!`);
-      this.logger.warn(this.rooms);
       //!_-------
       this.rooms[to_room].forEach((participant) => {
         console.log(participant.id, client.id);
