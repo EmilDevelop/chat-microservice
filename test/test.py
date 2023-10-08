@@ -41,12 +41,13 @@ def message_to_room(data):
 
 server_address = "http://5.53.124.87:3007"
 local_address = "http://127.0.0.1:3007"
-DEBUG = True
+DEBUG = False
 connection_address = local_address if DEBUG else server_address
 sio.connect(connection_address)
 # sio.emit("verbose", "HELLO!")
-sio.emit("joinRoom", "omega")
-sio.emit("messageToRoom", {"room": "omega", "message": "А не ахуел-ли ты часом?"})
-sio.emit("privateMessage", {"to": "123", "message": "Poshel nahuy"})
+sio.emit("joinRoom", "79961049967")
+# sio.emit("messageToRoom", {"room": "79961049967", "message": "А не ахуел-ли ты часом?"})
+user_id = "p3nURkoY3lCDw2Z4AAAB"
+sio.emit("privateMessage", {"to": user_id, "message": "Poshel nahuy"})
 
 sio.wait()

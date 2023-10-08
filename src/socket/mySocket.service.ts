@@ -75,11 +75,11 @@ export class MySocketService
     const targetClient = this.server.sockets.sockets.get(to);
     if (targetClient) {
       targetClient.emit(
-        "chat",
+        "privateMessage",
         `Private message from ${client.id}: ${message}`
       );
     } else {
-      client.emit("chat", `User ${to} not found or offline.`);
+      client.emit("privateMessage", `User ${to} not found or offline.`);
     }
   }
 
