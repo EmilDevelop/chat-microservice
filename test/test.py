@@ -51,7 +51,7 @@ sio.emit("joinRoom", "79961049967")
 user_id = "uZ4fIoVotmlYalbqAAAD"
 msg = {
     "from_user_socket_id": "FROM_SOCKET_ID",
-    "to_user_socket_id": "uhXGvQjJKaJ2dFgRAAAF",
+    "to_user_socket_id": "FNFWi4iVb4WTCEk-AAAJ",
     "to_room": "79961049967",
     "author": {"id": " 1234567", "firstName": "Кучерявый", "lastName": "Долбаёб"},
     "text": "Если ты видишь это сообщение, то твоя жопа в опасности, обернись!",

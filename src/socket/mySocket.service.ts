@@ -68,6 +68,8 @@ export class MySocketService
     const { to_room, text } = payload;
     console.log(to_room, text);
     if (this.rooms[to_room]) {
+      const client_in_room = this.rooms[to_room].length;
+      this.logger.debug(`Room ${to_room} have ${client_in_room} clients...`);
       this.rooms[to_room].forEach((participant) => {
         console.log(participant.id, client.id);
         if (participant !== client) {
