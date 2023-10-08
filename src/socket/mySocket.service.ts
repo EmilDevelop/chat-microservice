@@ -63,25 +63,26 @@ export class MySocketService
   @SubscribeMessage("messageToRoom")
   handleMessageToRoom(
     client: Socket,
-    payload: { room: string; message: string }
+    payload: { to_room: string; text: string }
   ): void {
-    const { room, message } = payload;
-    if (this.rooms[room]) {
-      this.rooms[room].forEach((participant) => {
+    const { to_room, text } = payload;
+    if (this.rooms[to_room]) {
+      this.rooms[to_room].forEach((participant) => {
         if (participant !== client) {
           const newMsg: PrivateMsgInrerface = {
             id: randomUUID(),
             from_user_socket_id: client.id,
             to_user_socket_id: participant.id,
-            to_room: room,
+            to_room: to_room,
             author: {
               id: "SOME_USER_ID",
               firstName: "SOME_USER_FIRST_NAME",
               lastName: "SOME_USER_SECOND_NAME",
             },
-            text: message,
+            text: text,
             createdAt: Date.now(),
           };
+          console.log(`sended to chat => ${participant.id} \n${newMsg}`);
           participant.emit("chat", newMsg);
         }
       });

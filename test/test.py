@@ -48,13 +48,15 @@ sio.connect(connection_address)
 # sio.emit("verbose", "HELLO!")
 sio.emit("joinRoom", "79961049967")
 # sio.emit("messageToRoom", {"room": "79961049967", "message": "А не ахуел-ли ты часом?"})
-user_id = "UcdEgwLDp8qZ3uT3AAAB"
+user_id = "1ByuV-rOs04h6eJtoGN7JaAAAD"
 msg = {
     "from_user_socket_id": "FROM_SOCKET_ID",
     "to_user_socket_id": "string",
     "to_room": "string",
+    "room": "79961049967",
     "author": {"id": " 1234567", "firstName": "Кучерявый", "lastName": "Долбаёб"},
     "text": "Если ты видишь это сообщение, то твоя жопа в опасности, обернись!",
+    "message": "Если ты видишь это сообщение, то твоя жопа в опасности, обернись!",
     "id": "2ec927f0-1955-4f32-935b-55d6534a750a",
     "createdAt": int(time.time()),
 }
