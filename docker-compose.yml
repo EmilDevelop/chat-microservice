@@ -1,13 +1,13 @@
-version: '3.5'
+version: "3.5"
 
 services:
   postgres_db:
-    container_name: PROJECT_NAME_postgres #!
+    container_name: scaner_postgres #!
     image: postgres:12
     environment:
-      POSTGRES_USER: USER_NAME #!
-      POSTGRES_DB: DB_NAME #!
-      POSTGRES_PASSWORD: DB_PASSWORD #!
+      POSTGRES_USER: EmilNorth #!
+      POSTGRES_DB: scaner #!
+      POSTGRES_PASSWORD: helloWorld #!
       PGDATA: /data/postgres
     volumes:
       - postgres:/var/lib/postgresql/data
@@ -17,20 +17,20 @@ services:
       - oopils
     restart: unless-stopped
 
-  postgres_pgadmin:
-    container_name: PROJECT_NAME_pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: emil@digitup.es
-      PGADMIN_DEFAULT_PASSWORD: udJRQwIA
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/var/lib/pgadmin/data
-    ports:
-      - 127.0.0.1:5050:80
-    networks:
-      - oopils
-    restart: unless-stopped
+  # postgres_pgadmin:
+  #   container_name: scaner_pgadmin
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: emil@digitup.es
+  #     PGADMIN_DEFAULT_PASSWORD: udJRQwIA
+  #     PGADMIN_CONFIG_SERVER_MODE: "False"
+  #   volumes:
+  #     - pgadmin:/var/lib/pgadmin/data
+  #   ports:
+  #     - 127.0.0.1:5050:80
+  #   networks:
+  #     - oopils
+  #   restart: unless-stopped
 
   # web:
   #   build: .
@@ -47,6 +47,6 @@ networks:
     driver: bridge
 
 volumes:
-  pgadmin:
   postgres:
+  # pgadmin:
   # web:
